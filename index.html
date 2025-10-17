@@ -27,7 +27,8 @@
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-  margin:0;background:radial-gradient(1200px 800px at 70% -10%,rgba(183,167,255,.10),transparent 60%),
+  margin:0;background:
+  radial-gradient(1200px 800px at 70% -10%,rgba(183,167,255,.10),transparent 60%),
   linear-gradient(180deg,#0a0c10,#0a0c10 60%,#07090d);
   color:var(--ink); font:500 16px/1.55 ui-sans-serif,system-ui,Segoe UI,Roboto,Apple Color Emoji;
   -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
@@ -56,6 +57,15 @@ button{cursor:pointer;border:0}
 .energy span{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--glass-2)}
 .energy .dot{width:8px;height:8px;border-radius:50%}
 .g{background:#7ad3ac}.f{background:#b7a7ff}.r{background:#46536a}
+
+/* Buttons */
+.btn{
+  padding:12px 14px;border-radius:12px;background:var(--accent);color:#0a0c10;font-weight:700;letter-spacing:.3px;display:inline-flex;align-items:center;gap:8px
+}
+.btn.ghost{background:var(--glass);color:var(--ink);border:1px solid rgba(255,255,255,.1)}
+.btn.dark{background:#151a22;color:var(--ink);border:1px solid rgba(255,255,255,.1)}
+.meta{margin-top:10px;color:var(--muted);font-size:12px}
+kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#141722;border:1px solid rgba(255,255,255,.15);padding:4px 6px;border-radius:6px;color:#bcd}
 
 /* Alive layer shimmer */
 .alive{
@@ -107,13 +117,6 @@ button{cursor:pointer;border:0}
 .cta{
   display:flex;flex-wrap:wrap;gap:10px;padding:12px
 }
-.btn{
-  padding:12px 14px;border-radius:12px;background:var(--accent);color:#0a0c10;font-weight:700;letter-spacing:.3px
-}
-.btn.ghost{background:var(--glass);color:var(--ink);border:1px solid rgba(255,255,255,.1)}
-.btn.dark{background:#151a22;color:var(--ink);border:1px solid rgba(255,255,255,.1)}
-.meta{margin-top:10px;color:var(--muted);font-size:12px}
-kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#141722;border:1px solid rgba(255,255,255,.15);padding:4px 6px;border-radius:6px;color:#bcd}
 .footer{margin-top:20px;padding:14px;text-align:center;color:var(--muted);font-size:12px}
 
 /* Responsive */
@@ -132,6 +135,7 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
       <div class="h1">PLNT Earth · Campus</div>
       <div class="h2">Conservatory of Resonance — 7 Schools · 3 Floors · 7 Corridors · 50 Rooms</div>
     </div>
+    <a href="/map" class="btn ghost" style="margin-left:8px">Map</a>
     <div class="energy" title="Energy Path">
       <span class="dot g"></span><span>Ground</span>
       <span class="dot f"></span><span>Flow</span>
@@ -143,7 +147,7 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     <aside class="panel card" id="schools">
       <div class="badge"><div class="b" style="background:var(--accent)"></div><b>Campus Map</b><span class="meta">Pick a school → jump to Today’s Room</span></div>
       <div class="school-list" id="schoolList"></div>
-      <div class="meta">Tip: Press <kbd>T</kbd> for Today Room · <kbd>M</kbd> toggles mini-map</div>
+      <div class="meta">Tip: Press <kbd>T</kbd> for Today Room · <kbd>M</kbd> opens Map</div>
     </aside>
 
     <article class="quick card">
@@ -198,7 +202,7 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     specialRooms:["Victory Stage","Mirror Lab","Tone Studio","Color Lab","Garden","Dream Map","Commons","Archive"]
   };
 
-  /* ---------- Illumina cycles (public) for day mapping ---------- */
+  /* ---------- Illumina cycles for day mapping ---------- */
   var cycles = [
     { name:"Illumina 1 — Launch", start:"2025-11-05", end:"2025-12-17" },
     { name:"Illumina 2 — New Year", start:"2026-01-03", end:"2026-02-14" },
@@ -244,13 +248,17 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
       el.innerHTML = '<div class="i" style="background:'+s.color+'"></div><div><b>'+s.name+'</b><small>'+s.teaches+'<span>'+liveNote+'</span></small></div>';
       if(!s.live){
         el.style.opacity = .65;
-        el.title = "Coming Soon";
+        el.title = "Coming Soon (click to open on Map)";
       }else{
         el.target = "_blank";
         el.rel = "noopener";
       }
       el.addEventListener("click", function(e){
-        if(!s.live){ e.preventDefault(); jumpToToday(s.key); }
+        if(!s.live){
+          e.preventDefault();
+          var t = state.today.day;
+          window.location.href = "/map#school="+s.key+"&room="+t;
+        }
       });
       box.appendChild(el);
     });
@@ -302,8 +310,8 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
 
   function openRoom(n){
     state.currentRoom = n;
-    var url = buildDeepLink(n, state.currentSchool || "mirror"); // default to Mirror if unset
-    window.location.href = url; // fast jump; replace with SPA routing later if desired
+    var url = buildDeepLink(n, state.currentSchool || "mirror");
+    window.location.href = url;
   }
 
   function jumpToToday(schoolKey){
@@ -311,18 +319,15 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     openRoom(state.today.day);
   }
 
+  /* Always route via Map; school sites can later claim their own /room/:id */
   function buildDeepLink(room, schoolKey){
-    var school = campus.schools.find(function(s){return s.key===schoolKey;}) || campus.schools[1]; // Mirror default
-    var base = school.live ? ("https://"+school.domain) : "https://campus.plnt.earth";
-    var path = "/map#school="+school.key+"&room="+room; // lightweight hash route
-    return base + path;
+    var school = campus.schools.find(function(s){return s.key===schoolKey;}) || campus.schools[1];
+    return "/map#school="+school.key+"&room="+room;
   }
 
-  /* ---------- Mini-map (in-page) ---------- */
   function openMap(){
     var hash = "#school="+(state.currentSchool||"mirror")+"&room="+(state.currentRoom||state.today.day);
-    var w = window.open(location.origin+location.pathname+hash, "_blank");
-    if(w){ /* noop */ }
+    window.location.href = "/map" + hash;
   }
 
   /* ---------- Hotkeys ---------- */
@@ -340,7 +345,7 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
   $("#randomBtn").addEventListener("click", function(){
     var r = Math.floor(Math.random()*42)+1;
     state.currentRoom = r;
-    highlightToday(); // keeps today's highlight; random is just a jump
+    highlightToday();
     openRoom(r);
   });
   $("#openMap").addEventListener("click", openMap);
