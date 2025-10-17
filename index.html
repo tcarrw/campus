@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PLNT Earth · Campus</title>
+<meta name="theme-color" content="#0b0d11">
+<style>
+:root{
+  --bg:#0a0c10;
+  --ink:#e9ecf5;
+  --muted:#aeb6c9;
+  --glass:rgba(255,255,255,.06);
+  --glass-2:rgba(255,255,255,.1);
+  --accent:#b7a7ff;        /* Mirror/Violet */
+  --honey:#ffd782;         /* Sabrina */
+  --voice:#d2f0ff;         /* Ariana */
+  --bridge:#ff9bd5;        /* Doechii */
+  --clarity:#9ff1d7;       /* Sigrid */
+  --alter:#ffadc2;         /* Alter Fire */
+  --earth:#b0d98b;         /* Greta */
+  --rim:#dcd1ff;
+  --ring:0 0 0 3px rgba(183,167,255,.45);
+  --radius:18px;
+  --shadow:0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:radial-gradient(1200px 800px at 70% -10%,rgba(183,167,255,.10),transparent 60%),
+  linear-gradient(180deg,#0a0c10,#0a0c10 60%,#07090d);
+  color:var(--ink); font:500 16px/1.55 ui-sans-serif,system-ui,Segoe UI,Roboto,Apple Color Emoji;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;border:0}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 16px 48px}
+.header{
+  display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10;
+  background:linear-gradient(180deg,rgba(10,12,16,.9),rgba(10,12,16,.65) 80%,transparent);
+  backdrop-filter:saturate(140%) blur(10px);padding:14px 12px;border-radius:0 0 18px 18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+.logo{
+  width:40px;height:40px;border-radius:12px;background:
+  conic-gradient(from 210deg at 50% 50%,#b7a7ff, #ffd782, #9ff1d7, #ff9bd5, #d2f0ff, #ffadc2, #b0d98b, #b7a7ff);
+  box-shadow:0 0 0 2px rgba(255,255,255,.08), inset 0 0 40px rgba(255,255,255,.25);
+}
+.hgroup{display:flex;flex-direction:column}
+.h1{font-size:18px;letter-spacing:.6px}
+.h2{font-size:12px;color:var(--muted)}
+.energy{
+  margin-left:auto;display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:999px;
+  background:var(--glass);box-shadow:var(--shadow)
+}
+.energy span{font-size:12px;padding:6px 10px;border-radius:999px;background:var(--glass-2)}
+.energy .dot{width:8px;height:8px;border-radius:50%}
+.g{background:#7ad3ac}.f{background:#b7a7ff}.r{background:#46536a}
+
+/* Alive layer shimmer */
+.alive{
+  pointer-events:none;position:fixed;inset:0;background:
+  radial-gradient(900px 500px at 20% -10%,rgba(255,255,255,.05),transparent 60%),
+  radial-gradient(900px 500px at 80% 110%,rgba(255,255,255,.04),transparent 60%);
+  mask-image:radial-gradient(100% 60% at 50% 30%,rgba(0,0,0,.9),transparent);
+  animation:drift 22s linear infinite;
+}
+@keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(6px)}100%{transform:translateY(0)}}
+
+/* Map grid */
+.card{
+  background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.map{
+  margin-top:18px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px;align-items:stretch
+}
+.panel{grid-column:span 5;display:flex;flex-direction:column;padding:16px}
+.quick{grid-column:span 7;padding:0;overflow:hidden}
+.quick .bar{
+  display:flex;gap:10px;padding:12px;background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.08)
+}
+.badge{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--glass)
+}
+.badge .b{
+  width:20px;height:20px;border-radius:8px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.25), 0 0 16px rgba(255,255,255,.15)
+}
+.school-list{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}
+.school{display:flex;gap:10px;align-items:center;padding:12px;border-radius:14px;background:var(--glass);border:1px solid rgba(255,255,255,.08)}
+.school .i{width:16px;height:16px;border-radius:6px}
+.school small{color:var(--muted);display:block;margin-top:2px}
+
+/* Floors + corridors */
+.stack{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px}
+.floor{
+  border-radius:14px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08)
+}
+.floor h4{margin:0 0 8px 0;font-size:12px;color:var(--muted);letter-spacing:.4px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{font-size:12px;padding:6px 9px;border-radius:999px;background:var(--glass);border:1px solid rgba(255,255,255,.08)}
+.roomgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.roombtn{
+  font-size:11px;line-height:1;padding:10px 0;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+}
+.roombtn[aria-current="true"]{outline:var(--ring);background:rgba(183,167,255,.12)}
+.cta{
+  display:flex;flex-wrap:wrap;gap:10px;padding:12px
+}
+.btn{
+  padding:12px 14px;border-radius:12px;background:var(--accent);color:#0a0c10;font-weight:700;letter-spacing:.3px
+}
+.btn.ghost{background:var(--glass);color:var(--ink);border:1px solid rgba(255,255,255,.1)}
+.btn.dark{background:#151a22;color:var(--ink);border:1px solid rgba(255,255,255,.1)}
+.meta{margin-top:10px;color:var(--muted);font-size:12px}
+kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#141722;border:1px solid rgba(255,255,255,.15);padding:4px 6px;border-radius:6px;color:#bcd}
+.footer{margin-top:20px;padding:14px;text-align:center;color:var(--muted);font-size:12px}
+
+/* Responsive */
+@media (max-width:980px){
+  .panel{grid-column:span 12}
+  .quick{grid-column:span 12}
+}
+</style>
+</head>
+<body>
+<div class="alive"></div>
+<div class="wrap">
+  <div class="header card">
+    <div class="logo" aria-hidden="true"></div>
+    <div class="hgroup">
+      <div class="h1">PLNT Earth · Campus</div>
+      <div class="h2">Conservatory of Resonance — 7 Schools · 3 Floors · 7 Corridors · 50 Rooms</div>
+    </div>
+    <div class="energy" title="Energy Path">
+      <span class="dot g"></span><span>Ground</span>
+      <span class="dot f"></span><span>Flow</span>
+      <span class="dot r"></span><span>Rest</span>
+    </div>
+  </div>
+
+  <section class="map">
+    <aside class="panel card" id="schools">
+      <div class="badge"><div class="b" style="background:var(--accent)"></div><b>Campus Map</b><span class="meta">Pick a school → jump to Today’s Room</span></div>
+      <div class="school-list" id="schoolList"></div>
+      <div class="meta">Tip: Press <kbd>T</kbd> for Today Room · <kbd>M</kbd> toggles mini-map</div>
+    </aside>
+
+    <article class="quick card">
+      <div class="bar">
+        <div class="badge"><div class="b" style="background:var(--honey)"></div>Honey</div>
+        <div class="badge"><div class="b" style="background:var(--accent)"></div>Mirror</div>
+        <div class="badge"><div class="b" style="background:var(--voice)"></div>Voice</div>
+        <div class="badge"><div class="b" style="background:var(--bridge)"></div>Bridge</div>
+        <div class="badge"><div class="b" style="background:var(--clarity)"></div>Clarity</div>
+        <div class="badge"><div class="b" style="background:var(--alter)"></div>Alter Fire</div>
+        <div class="badge"><div class="b" style="background:var(--earth)"></div>Earth</div>
+      </div>
+      <div class="stack" id="floors"></div>
+      <div class="cta">
+        <button class="btn" id="todayBtn">Today Room</button>
+        <button class="btn ghost" id="randomBtn">Random Room</button>
+        <button class="btn dark" id="openMap">Full Map</button>
+      </div>
+      <div class="meta" id="statusLine"></div>
+    </article>
+  </section>
+
+  <div class="footer">Alive layer on · Coming Soon links auto-hide when their domains go live.</div>
+</div>
+
+<script>
+(function(){
+  /* ---------- Config ---------- */
+  var campus = {
+    schools: [
+      { key:"honey",   name:"Honey School",    color:"var(--honey)",  domain:"honey.plnt.earth",   live:false,
+        teaches:"magnetism, savor, playful confidence", learns:"repeatable audience sweet spots" },
+      { key:"mirror",  name:"Mirror School",   color:"var(--accent)", domain:"mirrorhoney.plnt.earth", live:false,
+        teaches:"self-witnessing, boundary, reinvention", learns:"Butterfly Mode scaffolds" },
+      { key:"voice",   name:"Voice School",    color:"var(--voice)",  domain:"voice.plnt.earth",   live:false,
+        teaches:"breath, placement, tenderness with power", learns:"spatial tone tools" },
+      { key:"bridge",  name:"Bridge School",   color:"var(--bridge)", domain:"bridge.plnt.earth",  live:false,
+        teaches:"disruption, humor, lane-switching", learns:"structured chaos → clear arcs" },
+      { key:"clarity", name:"Clarity School",  color:"var(--clarity)",domain:"clarity.plnt.earth", live:false,
+        teaches:"integrity, bright directness", learns:"clean UI + honest copy frameworks" },
+      { key:"alter",   name:"Alter Fire (Elective)", color:"var(--alter)",domain:"alter.fire.plnt.earth", live:true,
+        teaches:"stance, heat-to-craft", learns:"safe ignition loops" },
+      { key:"earth",   name:"Earth Conscience", color:"var(--earth)", domain:"earth.plnt.earth",   live:false,
+        teaches:"ethics, pacing, consequences", learns:"visible cycle accountability" }
+    ],
+    corridors: ["Launch","New Year","Early Spring","Solstice Build","High Summer","Autumn Shift","Year-End Reflection"],
+    floors: [
+      { key:"ground", label:"Floor 1 — Ground",  tags:["Ethics","Breath","Tone"], labs:["Tone Studio"] },
+      { key:"flow",   label:"Floor 2 — Flow",    tags:["Playlists","Color","Movement"], labs:["Color Lab","Froot Player"] },
+      { key:"rest",   label:"Floor 3 — Rest",    tags:["Reflection","Dream","Archive"], labs:["Mirror Lab","Moon Papers"] }
+    ],
+    specialRooms:["Victory Stage","Mirror Lab","Tone Studio","Color Lab","Garden","Dream Map","Commons","Archive"]
+  };
+
+  /* ---------- Illumina cycles (public) for day mapping ---------- */
+  var cycles = [
+    { name:"Illumina 1 — Launch", start:"2025-11-05", end:"2025-12-17" },
+    { name:"Illumina 2 — New Year", start:"2026-01-03", end:"2026-02-14" },
+    { name:"Illumina 3 — Early Spring", start:"2026-03-03", end:"2026-04-14" },
+    { name:"Illumina 4 — Solstice Build", start:"2026-05-01", end:"2026-06-12" },
+    { name:"Illumina 5 — High Summer", start:"2026-06-30", end:"2026-08-11" },
+    { name:"Illumina 6 — Autumn Shift", start:"2026-08-29", end:"2026-10-10" },
+    { name:"Illumina 7 — Year-End", start:"2026-10-28", end:"2026-12-09" }
+  ];
+
+  function parse(d){ var s=d.split("-"); return new Date(Number(s[0]), Number(s[1])-1, Number(s[2])); }
+  function clamp(v,min,max){ return v<min?min:(v>max?max:v); }
+
+  function findCycleFor(date){
+    for(var i=0;i<cycles.length;i++){
+      var a=parse(cycles[i].start), b=parse(cycles[i].end);
+      if(date>=a && date<=b) return { idx:i, meta:cycles[i] };
+    }
+    return null;
+  }
+  function dayOfCycle(date){
+    var f=findCycleFor(date);
+    if(!f) return { day:1, label:"Pre-cycle", cycle:null };
+    var start=parse(f.meta.start);
+    var diff=Math.floor((date - start)/86400000) + 1; // 1..42
+    return { day: clamp(diff,1,42), label:f.meta.name, cycle:f.meta };
+  }
+
+  /* ---------- DOM helpers ---------- */
+  var $ = function(sel, el){ return (el||document).querySelector(sel); };
+  var $$ = function(sel, el){ return Array.prototype.slice.call((el||document).querySelectorAll(sel)); };
+
+  /* ---------- Render Schools ---------- */
+  function renderSchools(){
+    var box = $("#schoolList");
+    box.innerHTML = "";
+    campus.schools.forEach(function(s){
+      var liveNote = s.live ? "" : " · Coming Soon";
+      var el = document.createElement("a");
+      el.className = "school";
+      el.href = s.live ? ("https://"+s.domain) : "javascript:void(0)";
+      el.setAttribute("data-key", s.key);
+      el.innerHTML = '<div class="i" style="background:'+s.color+'"></div><div><b>'+s.name+'</b><small>'+s.teaches+'<span>'+liveNote+'</span></small></div>';
+      if(!s.live){
+        el.style.opacity = .65;
+        el.title = "Coming Soon";
+      }else{
+        el.target = "_blank";
+        el.rel = "noopener";
+      }
+      el.addEventListener("click", function(e){
+        if(!s.live){ e.preventDefault(); jumpToToday(s.key); }
+      });
+      box.appendChild(el);
+    });
+  }
+
+  /* ---------- Render Floors + Room Grid ---------- */
+  function renderFloors(){
+    var box = $("#floors");
+    box.innerHTML = "";
+    campus.floors.forEach(function(f){
+      var div = document.createElement("div");
+      div.className = "floor";
+      var tags = f.tags.map(function(t){ return '<span class="tag">'+t+'</span>'; }).join("");
+      var labs = (f.labs||[]).map(function(t){ return '<span class="tag">'+t+'</span>'; }).join("");
+      var corridors = campus.corridors.map(function(c){ return '<span class="tag">'+c+'</span>'; }).join("");
+      div.innerHTML = '<h4>'+f.label+'</h4><div class="tags">'+tags+' '+labs+'</div><div class="tags" style="margin-top:8px">'+corridors+'</div>'+
+                      '<div class="roomgrid" aria-label="Rooms 1-42"></div>';
+      var grid = $(".roomgrid", div);
+      for(var i=1;i<=42;i++){
+        var b = document.createElement("button");
+        b.className="roombtn";
+        b.textContent=i;
+        b.setAttribute("data-room", i);
+        b.addEventListener("click", function(ev){
+          var n = Number(ev.currentTarget.getAttribute("data-room"));
+          openRoom(n);
+        });
+        grid.appendChild(b);
+      }
+      box.appendChild(div);
+    });
+  }
+
+  /* ---------- State + Actions ---------- */
+  var state = {
+    today: dayOfCycle(new Date()),
+    currentRoom: null,
+    currentSchool: null
+  };
+
+  function highlightToday(){
+    $$(".roombtn").forEach(function(b){ b.removeAttribute("aria-current"); });
+    var t = state.today.day;
+    $$('.roombtn[data-room="'+t+'"]').forEach(function(b){ b.setAttribute("aria-current","true"); });
+    var line = $("#statusLine");
+    var label = state.today.label==="Pre-cycle" ? "Pre-cycle (Next: Illumina 1 — Nov 5, 2025)" : state.today.label;
+    line.textContent = "Today = Room "+t+" · "+label;
+  }
+
+  function openRoom(n){
+    state.currentRoom = n;
+    var url = buildDeepLink(n, state.currentSchool || "mirror"); // default to Mirror if unset
+    window.location.href = url; // fast jump; replace with SPA routing later if desired
+  }
+
+  function jumpToToday(schoolKey){
+    state.currentSchool = schoolKey || state.currentSchool || "mirror";
+    openRoom(state.today.day);
+  }
+
+  function buildDeepLink(room, schoolKey){
+    var school = campus.schools.find(function(s){return s.key===schoolKey;}) || campus.schools[1]; // Mirror default
+    var base = school.live ? ("https://"+school.domain) : "https://campus.plnt.earth";
+    var path = "/map#school="+school.key+"&room="+room; // lightweight hash route
+    return base + path;
+  }
+
+  /* ---------- Mini-map (in-page) ---------- */
+  function openMap(){
+    var hash = "#school="+(state.currentSchool||"mirror")+"&room="+(state.currentRoom||state.today.day);
+    var w = window.open(location.origin+location.pathname+hash, "_blank");
+    if(w){ /* noop */ }
+  }
+
+  /* ---------- Hotkeys ---------- */
+  function onKey(e){
+    if(e.key==="t"||e.key==="T"){ jumpToToday(); }
+    if(e.key==="m"||e.key==="M"){ openMap(); }
+  }
+
+  /* ---------- Init ---------- */
+  renderSchools();
+  renderFloors();
+  highlightToday();
+
+  $("#todayBtn").addEventListener("click", function(){ jumpToToday(); });
+  $("#randomBtn").addEventListener("click", function(){
+    var r = Math.floor(Math.random()*42)+1;
+    state.currentRoom = r;
+    highlightToday(); // keeps today's highlight; random is just a jump
+    openRoom(r);
+  });
+  $("#openMap").addEventListener("click", openMap);
+  document.addEventListener("keydown", onKey);
+
+  /* ---------- Expose tiny API (optional) ---------- */
+  window.PLNTCampus = {
+    getToday: function(){ return state.today; },
+    deepLink: function(room, school){ return buildDeepLink(room||state.today.day, school||"mirror"); },
+    jump: jumpToToday
+  };
+})();
+</script>
+</body>
+</html>
