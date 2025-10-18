@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,17 +13,18 @@
   --muted:#aeb6c9;
   --glass:rgba(255,255,255,.06);
   --glass-2:rgba(255,255,255,.1);
-  --accent:#b7a7ff;        /* Mirror/Violet */
-  --honey:#ffd782;         /* Sabrina */
-  --voice:#d2f0ff;         /* Ariana */
-  --bridge:#ff9bd5;        /* Doechii */
-  --clarity:#9ff1d7;       /* Sigrid */
-  --alter:#ffadc2;         /* Alter Fire */
-  --earth:#b0d98b;         /* Greta */
+  --accent:#b7a7ff;
+  --honey:#ffd782;
+  --voice:#d2f0ff;
+  --bridge:#ff9bd5;
+  --clarity:#9ff1d7;
+  --alter:#ffadc2;
+  --earth:#b0d98b;
   --rim:#dcd1ff;
   --ring:0 0 0 3px rgba(183,167,255,.45);
   --radius:18px;
   --shadow:0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+  color-scheme: dark;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -68,6 +70,18 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
   width:100%;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
   background:var(--glass);color:var(--ink);font-weight:700;letter-spacing:.3px
 }
+.sel{
+  appearance:none;
+  background:#121621;
+  color:#e9ecf5;
+  border:1px solid rgba(255,255,255,.18);
+}
+.sel:focus{ outline:var(--ring); border-color:transparent; }
+.sel option{ background:#0b0d11; color:#e9ecf5; }
+.sel option:hover,.sel option:checked{ background:#1a2030; color:#ffffff; }
+.sel option:disabled{ color:#6f7a8c; }
+#roomSel{ background:#101520; }
+
 .btn.primary{background:var(--accent);color:#0a0c10;border-color:transparent}
 .btn.ghost{background:var(--glass);color:var(--ink)}
 .meta{color:var(--muted);font-size:12px;padding:0 12px 12px}
@@ -121,7 +135,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
 
 <div class="wrap">
   <section class="grid">
-    <!-- LEFT: picker -->
     <aside class="card">
       <div class="controls">
         <select id="schoolSel" class="sel" aria-label="Choose school"></select>
@@ -137,7 +150,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
       </div>
     </aside>
 
-    <!-- RIGHT: summary + open -->
     <article class="card" id="summary">
       <div class="summary">
         <div class="badge"><div class="b" id="schoolColor" style="background:var(--accent)"></div><b id="schoolName">Mirror School</b></div>
@@ -158,7 +170,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
 
 <script>
 (function(){
-  /* ---------- Config (same shape as index.html) ---------- */
   var campus = {
     schools: [
       { key:"honey",   name:"Honey School",    color:"var(--honey)",  domain:"honey.plnt.earth",   live:false,
@@ -189,7 +200,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     { name:"Illumina 7 — Year-End", start:"2026-10-28", end:"2026-12-09" }
   ];
 
-  /* ---------- Utilities ---------- */
   function $(s,el){return (el||document).querySelector(s)}
   function $$(s,el){return Array.prototype.slice.call((el||document).querySelectorAll(s,el))}
   function parseDate(d){ var a=d.split("-"); return new Date(+a[0],+a[1]-1,+a[2]); }
@@ -227,7 +237,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     $("#hashView").textContent = str;
   }
 
-  /* ---------- Renderers ---------- */
   function renderSelectors(){
     var sel=$("#schoolSel"); sel.innerHTML="";
     campus.schools.forEach(function(s){
@@ -273,7 +282,6 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     $("#statusLine").textContent = "Selected: "+s.name.split(" (")[0]+" · Room "+state.room;
   }
 
-  /* ---------- Actions ---------- */
   function deepLink(state){
     var s=campus.schools.find(function(x){return x.key===state.school}) || campus.schools[1];
     var base = s.live ? ("https://"+s.domain) : (location.origin+location.pathname);
@@ -285,11 +293,10 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     if(s.live){
       window.location.href = deepLink(state);
     }else{
-      setHashState(state); // stay here and highlight
+      setHashState(state);
     }
   }
 
-  /* ---------- State + Update ---------- */
   var state = getHashState();
 
   function updateState(patch){
@@ -306,11 +313,9 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
     renderSummary(state);
   }
 
-  /* ---------- Init ---------- */
   renderSelectors();
   syncUI();
 
-  /* ---------- Events ---------- */
   $("#schoolSel").addEventListener("change", function(e){ updateState({school:e.target.value}); });
   $("#roomSel").addEventListener("change", function(e){ updateState({room:Number(e.target.value)}); });
 
@@ -345,3 +350,4 @@ kbd{font:600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;background:#1
 </script>
 </body>
 </html>
+```
